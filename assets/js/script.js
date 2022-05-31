@@ -49,7 +49,6 @@ var saveTasks = function() {
 
 
 
-
 // modal was triggered
 $("#task-form-modal").on("show.bs.modal", function() {
   // clear values
@@ -207,15 +206,21 @@ $(".card .list-group").sortable({
   tolerance: "pointer",
   helper: "clone",
   activate: function(event, ui) {
+    $(this).addClass("dropover");
+    $(".bottom-trash").addClass("bottom-trash-drag");
     console.log(ui);
   },
   deactivate: function(event, ui) {
+    $(this).removeClass("dropover");
+    $(".bottom-trash").removeClass("bottom-trash-drag");
     console.log(ui);
   },
   over: function(event) {
+    $(event.target).addClass("dropover-active");
     console.log(event);
   },
   out: function(event) {
+    $(event.target).removeClass("dropover-active");
     console.log(event);
   },
   update: function() {
@@ -262,9 +267,11 @@ $("#trash").droppable({
 
   },
   over: function(event, ui) {
+    $(".bottom-trash").addClass("bottom-trash-active");
     console.log(ui);
   },
   out: function(event, ui) {
+    $(".bottom-trash").removeClass("bottom-trash-active");
     console.log(ui);
   }
 });
@@ -293,8 +300,14 @@ var auditTask = function(taskEl) {
   else if (Math.abs(moment().diff(time, "days"))>10){
     $(taskEl).addClass("list-group-item-success");
   }
+  
 };
 
+setInterval(function () {
+  $(".card .list-group-item").each(function(index, el) {
+    auditTask(el);
+  });
+}, 5000);
 
 // load tasks for the first time
 loadTasks();
